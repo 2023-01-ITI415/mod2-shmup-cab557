@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;   // Enables the loading & reloading of scenes
 
@@ -11,8 +12,8 @@ using UnityEngine.SceneManagement;   // Enables the loading & reloading of scene
      public GameObject[] prefabEnemies;               // Array of Enemy prefabs
      public float enemySpawnPerSecond = 0.5f;  // # Enemies spawned/second
      public float enemyInsetDefault = 1.5f;    // Inset from the sides
- 
-     private BoundsCheck bndCheck;
+     public float gameRestartDelay = 2;
+    private BoundsCheck bndCheck;
  
      void Awake()
    {
@@ -49,4 +50,21 @@ Invoke(nameof(SpawnEnemy), 1f / enemySpawnPerSecond);                // a
          // Invoke SpawnEnemy() again
  Invoke(nameof(SpawnEnemy), 1f / enemySpawnPerSecond);                // g
      }
-}
+    void DelayedRestart()
+    {                                                   // c
+         // Invoke the Restart() method in gameRestartDelay seconds
+ Invoke(nameof(Restart), gameRestartDelay);
+    }
+    void Restart()
+    {
+         // Reload __Scene_0 to restart the game
+         // '__Scene_0' below starts with 2 underscores and ends with a zero.
+ SceneManager.LoadScene("_Scene 0");                               // d
+     }
+ 
+     static public void HERO_DIED()
+   {
+ S.DelayedRestart();                                                  // b
+     }
+ }
+

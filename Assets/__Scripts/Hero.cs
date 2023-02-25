@@ -11,11 +11,13 @@ public class Hero : MonoBehaviour
     public float rollMult = -45;
     public float pitchMult = 30;
 
-    [Header("Dynamic")]
-    [Range(0, 4)]
 
-    public float shieldLevel = 1;
-    [Tooltip('This field holds a reference to the last triggering GameObject')]
+    [Header("Dynamic")] [Range(0, 4)]
+    [SerializeField]
+   
+     private float _shieldLevel = 1;  // Remember the underscore
+    //public float shieldLevel = 1;
+    [Tooltip("This field holds a reference to the last triggering GameObject")]
     private GameObject lastTriggerGo = null;                                  // a
 
     // Start is called before the first frame update
@@ -61,7 +63,23 @@ public class Hero : MonoBehaviour
         }
         else
         {
- Debug.LogWarning("Shield trigger hit by non-Enemy: " + go.name);    // g
-         }
+            Debug.LogWarning("Shield trigger hit by non-Enemy: " + go.name);    // g
+        }
     }
+         
+         public float shieldLevel
+    {
+         get { return (_shieldLevel); }                                      // b
+         private set
+        {                                                         // c
+ _shieldLevel = Mathf.Min(value, 4);                             // d
+             // If the shield is going to be set to less than zero…
+             if (value < 0)
+            {                                                  // e
+ Destroy(this.gameObject);  // Destroy the Hero
+                Main.HERO_DIED();
+            }
+         }
+     }
+
 }
